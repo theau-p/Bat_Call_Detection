@@ -1,8 +1,8 @@
-### CONSTRUCTION D'UN RESEAU DE NEURONE CONVOLUTIF POUR LA RECONNAISSANCE D'IMAGE ###
-# On va apprendre à l'algorithme à reconnaitre le signal d'une pipistrelle ou du bruit 
+### CONSTRUCTION OF A CONVOLUTIONAL NEURAL NETWORK FOR IMAGE RECOGNITION ###
+# We will teach the algorithm to recognise the signal of a pipistrelle or noise 
 
 
-# IMPORTER ET PREPROCESS LES DONNEES #
+# IMPORT AND PREPROCESS THE DATA #
 
 import torch
 import os
@@ -25,14 +25,14 @@ class PipistrelleVSBruit():
     bruit_count = 0
 
     def make_training_data(self): 
-        for label in self.LABELS:               # label parcourt les clés du dictionnaires à savoir PIPISTRELLES et BRUITS
+        for label in self.LABELS:               
             print(label)
-            for f in tqdm(os.listdir(label)):   # tqdm est une barre de progression et for f in os.listdir(label) permet de parcourir (lister) les images (attention f est juste le nom du fichier !!!) du directoire
-                try:                            # On utilise des exceptions car il peut y avoir des images défaillantes ou simplement absentes  
+            for f in tqdm(os.listdir(label)):   # tqdm is a progress bar 
+                try:                            # Exceptions are used because there may be faulty or simply missing images    
                     path = os.path.join(label, f)
-                    img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)    # On lit l'image et on la convertit en gris (valeurs des pixels entre 0 et 1)
-                    img = cv2.resize(img, (self.IMG_SIZE, self.IMG_SIZE))     # On modifie les dimensions de l'image pour obtenir une image carrée (il faut écrire les deux dimensions)
-                    self.training_data.append([np.array(img), np.eye(2)[self.LABELS[label]]])   #Le np.eye(2) est une technique astucieuse pour afficher (1,0) ou (0,1) si c'est une pipistrelle ou du bruit. 
+                    img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)    # The image is read and converted to grey (pixel values between 0 and 1)
+                    img = cv2.resize(img, (self.IMG_SIZE, self.IMG_SIZE))    # We modify the dimensions of the image to obtain a square image (we must write the two dimensions)
+                    self.training_data.append([np.array(img), np.eye(2)[self.LABELS[label]]])   # np.eye(2) allows to display (1,0) or (0,1) if it is a pipistrelle or noise. 
                     if label == self.PIPISTRELLES:
                         self.pipistrelle_count += 1
                     elif label == self.BRUITS:
@@ -40,12 +40,12 @@ class PipistrelleVSBruit():
                 except Exception as e: 
                     pass
 
-        np.random.shuffle(self.training_data)   # On "mélange" le training set. 
-        np.save("training_data.npy", self.training_data)   # Comme la fonction précédente peut prendre du temps, on sauve le fichier pour éviter de refaire les calculs à chaque fois. 
+        np.random.shuffle(self.training_data)   # Shuffling the data 
+        np.save("training_data.npy", self.training_data)   
         print("Pipistrelles:", self.pipistrelle_count)
         print("Bruits:", self.bruit_count)    
             
-if REBUILD_DATA:                               # Permet de gérer plus simplement lorsqu'on change le code (du style la taille de l'image...)
+if REBUILD_DATA:                               # Allows to manage more easily when changing the code
     pipistrellevbruit = PipistrelleVSBruit()
     pipistrellevbruit.make_training_data() 
 
@@ -53,7 +53,7 @@ training_data = np.load("training_data.npy", allow_pickle=True)
 
 
 
-# CONSTRUCTION DU RESEAU DE NEURONE CONVOLUTIF 
+# CONSTRUCTION OF THE CONVOLUTIONAL NEURAL NETWORK 
 
 import torch.nn as nn 
 import torch.nn.functional as F 
@@ -61,76 +61,76 @@ import torch.nn.functional as F
 class Net(nn.Module):
     def __init__(self):
         super().__init__()
-        self.conv1 = nn.Conv2d(1, 4, 5)    # L'entrée est 1 image, 32 sortie, et le kernel est de taille 5*5 (On utilise une fenêtre de 5 par 5 pixels pour faire les convolutions et elle se déplace sur toute l'image )
+        self.conv1 = nn.Conv2d(1, 4, 5)    # The input is 1 image, 4 outputs (feature maps), and the kernel is of size 5*5 (We use a window of 5 by 5 pixels to make the convolutions and it moves on the whole image)
         self.conv2 = nn.Conv2d(4, 8, 5)
 
         self.fc = nn.Linear(3872, 2)  # flattening
-         # 2 sorties pour pipistrelle ou bruit (2 classes)
+         # 2 outputs for pipistrelle or noise (2 classes)
 
     def forward(self, x):
-        x = self.conv1(x)                 # On passe la première couche 
+        x = self.conv1(x)                 # Going through the first layer 
         x = F.max_pool2d(F.relu(x), (2,2))
         x = self.conv2(x)
         x = F.max_pool2d(F.relu(x), (2,2))  
-        x = x.view(x.shape[0], -1)        # On met le tenseur sous forme de tenseur ligne (flatenning)
-        x = self.fc(x)                   # Comme c'est notre couche de sortie on n'utilise pas de fonction d'activation 
-        return F.softmax(x, dim=1)        # On crée une distribution de proba: on obtient un tenseur de la forme (0.23, 0.77). 
+        x = x.view(x.shape[0], -1)        # We put the tensor in the form of a line tensor (flatenning)
+        x = self.fc(x)                   # As this is our output layer we do not use an activation function  
+        return F.softmax(x, dim=1)        # We create a probabilistic distribution
 
 net = Net() 
 
-# ENTRAINEMENT DU MODELE 
+# MODEL TRAINING
 
 import torch.optim as optim 
 
-optimizer = optim.Adam(net.parameters(), lr = 0.001)  # La descente de gradient se fait "automatiquement" avec optimizer. On précise le learning rate (lr) et les paramètres du réseau (poids, biais) sont updatés. 
-loss_function = nn.MSELoss()                          # Fonction de coût : MSE: Mean Squared Error 
+optimizer = optim.Adam(net.parameters(), lr = 0.001)  # The gradient descent is done with the optimizer. The learning rate (lr) is specified and the network parameters (weights, bias) are updated. 
+loss_function = nn.MSELoss()                          # Loss function : MSE (Mean Squared Error)
 
 X = torch.Tensor([i[0] for i in training_data]).view(-1,100,100)
-X = X/255.0         # On normalise les pixels pour avoir des valeurs uniquement entre 0 et 1. 
+X = X/255.0         # The pixels are normalized to have values only between 0 and 1. 
 y = torch.Tensor([i[1] for i in training_data])
 
-# On veut désormais séparer les données que l'on utilise pour l'entrainement de celles utilisées pour tester l'accuracy (ou validation d'où VAL_PCT) 
+# We now want to separate the data we use for training from the data used for testing accuracy (or validation, hence VAL_PCT)   
 
-VAL_PCT = 0.2                  # On réserve 20% de nos données pour la validation 
+VAL_PCT = 0.2                  # We keep 20% of our data for validation 
 val_size = int(len(X)*VAL_PCT)
 print(val_size)
 
-# On slice nos données en différents groupes 
+# We slice our data into different groups 
 
-train_X = X[:-val_size]      # On prend pour l'entrainement les 90% premières données
+train_X = X[:-val_size]      # The first 90% of the data is taken for training 
 train_y = y[:-val_size]
 
-test_X = X[-val_size:]       # On prend pour le test les 10% restant 
+test_X = X[-val_size:]       # We take the remaining 10% for the test 
 test_y = y[-val_size:]
 
-# Itérations 
+# Iterations 
 
 BATCH_SIZE = 10
-EPOCHS = 15 # On ne propage et rétropropage toutes le training data quinze fois 
+EPOCHS = 15 # The training set is passed through the network 15 times  
 
 start = time.time()
 
 for epoch in range(EPOCHS): 
-    for i in tqdm(range(0, len(train_X), BATCH_SIZE)):         # On itère sur une longueur len(train_X) avec un pas de BATCH_SIZE 
+    for i in tqdm(range(0, len(train_X), BATCH_SIZE)):         # We iterate over a length len(train_X) with a step of BATCH_SIZE  
         batch_X = train_X[i:i+BATCH_SIZE].view(-1, 1, 100, 100)
         batch_y = train_y[i:i+BATCH_SIZE]
 
-        net.zero_grad()      # On remet à zéro les gradients pour faire la rétropropagation à chaque boucle 
+        net.zero_grad()      # The gradients are reset to zero to perform the backpropagation at each loop
 
         outputs = net(batch_X)
-        loss = loss_function(outputs, batch_y)   # On calcule l'erreur entre le résultat attendu et celui obtenu 
-        loss.backward()                          # Retropropagation pour loss
-        optimizer.step()                         # Descente de gradient (Minimisation de loss)
+        loss = loss_function(outputs, batch_y)   # Computing the error between the expected value and the predcited one
+        loss.backward()                          # Backpropagation
+        optimizer.step()                         # Gradient descent (Minimizing the loss function)
 
     print(f"Epoch: {epoch}. Loss: {loss}")
 
-# CALCUL DE LA PRECISION DU RESEAU DE NEURONE (ACCURACY)
+# COMPUTING THE ACCURACY OF THE ALGORITHM 
 
 correct = 0
 total = 0 
 real_label = []
 predicted_label = []
-with torch.no_grad():  # Attention à ne pas traquer le gradient 
+with torch.no_grad():  # Be careful not to track the gradient
     for i in tqdm(range(len(test_X))):
         real_class = torch.argmax(test_y[i])
         real_label.append(real_class)
@@ -148,7 +148,7 @@ print("Accuracy: ", round(correct/total, 3))
 print("Run time:", end-start, 'sec')
 
 
-# Matrice de confusion pour représenter les résultats du réseau 
+# CONFUSION MATRIX TO REPRESENT THE NETWORK RESULTS  
 
 real_label = np.array(real_label)
 predicted_label = np.array(predicted_label)
