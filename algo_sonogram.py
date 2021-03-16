@@ -1,3 +1,7 @@
+# NOTICE : I have not written the following program myself. It comes from a stackoverflow conversation which can be found at the following link : 
+# https://stackoverflow.com/questions/44787437/how-to-convert-a-wav-file-to-a-spectrogram-in-python3 
+
+
 import numpy as np
 from matplotlib import pyplot as plt
 import scipy.io.wavfile as wav
