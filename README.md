@@ -5,8 +5,7 @@ To address this type of problem, we chose to use a deep learning approach. We de
 
 We must then transform the sounds into images. This is possible thanks to sonograms, which give an image from a sound. The frequency is represented as a function of time, and a colour scale is used to represent the intensity: the more the colour tends towards red, the stronger the intensity; conversely, the more it tends towards blue, the weaker the intensity.
 
-<img title="Sonogram of a pipistrelle call" src="https://user-images.githubusercontent.com/69425777/111322878-ab62d080-8669-11eb-9641-9173c760dcdb.png" alt="drawing" width="400"/>
-<figcaption>Sonogram of a pipistrelle call</figcaption>
+<img title="Sonogram of a pipistrelle call" src="https://user-images.githubusercontent.com/69425777/111322878-ab62d080-8669-11eb-9641-9173c760dcdb.png" alt="drawing" width="400"/> <figcaption>Sonogram of a pipistrelle call</figcaption>
 
 
 <img title="Outdoor noise sonogram" src="https://user-images.githubusercontent.com/69425777/111322919-b4ec3880-8669-11eb-8d7e-15a04b83227d.png" alt="drawing" width="400"/>
