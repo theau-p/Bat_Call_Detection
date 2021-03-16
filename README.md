@@ -11,6 +11,15 @@ We must then transform the sounds into images. This is possible thanks to sonogr
 
 <img title="Outdoor noise sonogram" src="https://user-images.githubusercontent.com/69425777/111322919-b4ec3880-8669-11eb-8d7e-15a04b83227d.png" alt="drawing" width="400"/>
 <figcaption>Outdoor noise sonogram</figcaption>
+
+<div class="row">
+  <div class="column">
+    <img src="https://user-images.githubusercontent.com/69425777/111322878-ab62d080-8669-11eb-9641-9173c760dcdb.png" alt="drawing" style="width:100%">
+  </div>
+  <div class="column">
+    <img src="https://user-images.githubusercontent.com/69425777/111322919-b4ec3880-8669-11eb-8d7e-15a04b83227d.png" alt="drawing" style="width:100%">
+  </div>
+</div>
  
 Looking at the sonogram of pipistrelles' calls, we can see that they emit a rather characteristic call, called a "squeak": it is short, of high intensity, and has a particular shape that takes the form of a decreasing exponential. At this frequency, the sound is audible; it is a social call used for communication, courtship or to claim territory. This atypical call pattern can be recognised with an image recognition algorithm. The objective will be to differentiate it from "noise". Here we will call "noise" all sounds that are not bat calls: it can be the wind blowing, people talking, the noise of a car, the call of another animal, etc...
 
