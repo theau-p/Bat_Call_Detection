@@ -14,10 +14,10 @@ We must then transform the sounds into images. This is possible thanks to sonogr
 
 <div class="row">
   <div class="column">
-    <img src="https://user-images.githubusercontent.com/69425777/111322878-ab62d080-8669-11eb-9641-9173c760dcdb.png" alt="drawing" style="width:100%">
+    <img src="https://user-images.githubusercontent.com/69425777/111322878-ab62d080-8669-11eb-9641-9173c760dcdb.png" alt="drawing" style="width:50%">
   </div>
   <div class="column">
-    <img src="https://user-images.githubusercontent.com/69425777/111322919-b4ec3880-8669-11eb-8d7e-15a04b83227d.png" alt="drawing" style="width:100%">
+    <img src="https://user-images.githubusercontent.com/69425777/111322919-b4ec3880-8669-11eb-8d7e-15a04b83227d.png" alt="drawing" style="width:50%">
   </div>
 </div>
  
